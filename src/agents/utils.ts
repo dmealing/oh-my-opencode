@@ -11,7 +11,7 @@ import { createAtlasAgent } from "./atlas"
 import { createMomusAgent } from "./momus"
 import { createHephaestusAgent } from "./hephaestus"
 import type { AvailableAgent, AvailableCategory, AvailableSkill } from "./dynamic-agent-prompt-builder"
-import { deepMerge, fetchAvailableModels, resolveModelWithFallback, AGENT_MODEL_REQUIREMENTS, findCaseInsensitive, includesCaseInsensitive, readConnectedProvidersCache, isModelAvailable } from "../shared"
+import { deepMerge, fetchAvailableModels, resolveModelWithFallback, AGENT_MODEL_REQUIREMENTS, findCaseInsensitive, includesCaseInsensitive, readConnectedProvidersCache, isModelAvailable, isAnyFallbackModelAvailable } from "../shared"
 import { DEFAULT_CATEGORIES, CATEGORY_DESCRIPTIONS } from "../tools/delegate-task/constants"
 import { resolveMultipleSkills } from "../features/opencode-skill-loader/skill-content"
 import { createBuiltinSkills } from "../features/builtin-skills"
@@ -286,10 +286,15 @@ export async function createBuiltinAgents(
     }
   }
 
-   if (!disabledAgents.includes("sisyphus")) {
-     const sisyphusOverride = agentOverrides["sisyphus"]
-     const sisyphusRequirement = AGENT_MODEL_REQUIREMENTS["sisyphus"]
-    
+   const sisyphusOverride = findCaseInsensitive(agentOverrides, "sisyphus")
+   const sisyphusRequirement = AGENT_MODEL_REQUIREMENTS["sisyphus"]
+   const hasSisyphusExplicitConfig = sisyphusOverride !== undefined
+   const meetsSisyphusAnyModelRequirement =
+     !sisyphusRequirement?.requiresAnyModel ||
+     hasSisyphusExplicitConfig ||
+     isAnyFallbackModelAvailable(sisyphusRequirement.fallbackChain, availableModels)
+
+   if (!disabledAgents.includes("sisyphus") && meetsSisyphusAnyModelRequirement) {
     const sisyphusResolution = resolveModelWithFallback({
       uiSelectedModel,
       userModel: sisyphusOverride?.model,
@@ -332,13 +337,14 @@ export async function createBuiltinAgents(
    }
 
   if (!disabledAgents.includes("hephaestus")) {
-    const hephaestusOverride = agentOverrides["hephaestus"]
+    const hephaestusOverride = findCaseInsensitive(agentOverrides, "hephaestus")
     const hephaestusRequirement = AGENT_MODEL_REQUIREMENTS["hephaestus"]
+    const hasHephaestusExplicitConfig = hephaestusOverride !== undefined
 
     const hasRequiredModel =
       !hephaestusRequirement?.requiresModel ||
-      !availableModels ||
-      isModelAvailable(hephaestusRequirement.requiresModel, availableModels)
+      hasHephaestusExplicitConfig ||
+      (availableModels.size > 0 && isModelAvailable(hephaestusRequirement.requiresModel, availableModels))
 
     if (hasRequiredModel) {
       const hephaestusResolution = resolveModelWithFallback({

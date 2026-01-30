@@ -23,20 +23,25 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
     expect(primary.variant).toBe("high")
   })
 
-  test("sisyphus has valid fallbackChain with claude-opus-4-5 as primary", () => {
+  test("sisyphus has valid fallbackChain with claude-opus-4-5 as primary and requiresAnyModel", () => {
     // #given - sisyphus agent requirement
     const sisyphus = AGENT_MODEL_REQUIREMENTS["sisyphus"]
 
     // #when - accessing Sisyphus requirement
-    // #then - fallbackChain exists with claude-opus-4-5 as first entry
+    // #then - fallbackChain exists with claude-opus-4-5 as first entry, glm-4.7-free as last
     expect(sisyphus).toBeDefined()
     expect(sisyphus.fallbackChain).toBeArray()
-    expect(sisyphus.fallbackChain.length).toBeGreaterThan(0)
+    expect(sisyphus.fallbackChain).toHaveLength(5)
+    expect(sisyphus.requiresAnyModel).toBe(true)
 
     const primary = sisyphus.fallbackChain[0]
     expect(primary.providers[0]).toBe("anthropic")
     expect(primary.model).toBe("claude-opus-4-5")
     expect(primary.variant).toBe("max")
+
+    const last = sisyphus.fallbackChain[4]
+    expect(last.providers[0]).toBe("opencode")
+    expect(last.model).toBe("glm-4.7-free")
   })
 
   test("librarian has valid fallbackChain with glm-4.7 as primary", () => {

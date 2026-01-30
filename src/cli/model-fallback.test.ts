@@ -368,26 +368,43 @@ describe("generateModelConfig", () => {
   })
 
   describe("Sisyphus agent special cases", () => {
-    test("Sisyphus uses sisyphus-high capability when isMax20 is true", () => {
-      // #given Claude is available with Max 20 plan
+    test("Sisyphus is created when at least one fallback provider is available (Claude)", () => {
+      // #given
       const config = createConfig({ hasClaude: true, isMax20: true })
 
-      // #when generateModelConfig is called
+      // #when
       const result = generateModelConfig(config)
 
-      // #then Sisyphus should use opus (sisyphus-high)
+      // #then
       expect(result.agents?.sisyphus?.model).toBe("anthropic/claude-opus-4-5")
     })
 
-    test("Sisyphus uses sisyphus-low capability when isMax20 is false", () => {
-      // #given Claude is available without Max 20 plan
-      const config = createConfig({ hasClaude: true, isMax20: false })
+    test("Sisyphus is created when multiple fallback providers are available", () => {
+      // #given
+      const config = createConfig({
+        hasClaude: true,
+        hasKimiForCoding: true,
+        hasOpencodeZen: true,
+        hasZaiCodingPlan: true,
+        isMax20: true,
+      })
 
-      // #when generateModelConfig is called
+      // #when
       const result = generateModelConfig(config)
 
-      // #then Sisyphus should use sonnet (sisyphus-low)
-      expect(result.agents?.sisyphus?.model).toBe("anthropic/claude-sonnet-4-5")
+      // #then
+      expect(result.agents?.sisyphus?.model).toBe("anthropic/claude-opus-4-5")
+    })
+
+    test("Sisyphus is omitted when no fallback provider is available (OpenAI not in chain)", () => {
+      // #given
+      const config = createConfig({ hasOpenAI: true })
+
+      // #when
+      const result = generateModelConfig(config)
+
+      // #then
+      expect(result.agents?.sisyphus).toBeUndefined()
     })
   })
 

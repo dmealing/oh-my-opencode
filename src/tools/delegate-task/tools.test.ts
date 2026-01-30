@@ -211,14 +211,17 @@ describe("sisyphus-task", () => {
       // #given a mock client with no model in config
       const { createDelegateTask } = require("./tools")
       
-      const mockManager = { launch: async () => ({ id: "task-123" }) }
+      const mockManager = { launch: async () => ({ id: "task-123", status: "pending", description: "Test task", agent: "sisyphus-junior", sessionID: "test-session" }) }
       const mockClient = {
         app: { agents: async () => ({ data: [] }) },
         config: { get: async () => ({}) }, // No model configured
+        provider: { list: async () => ({ data: { connected: ["openai"] } }) },
+        model: { list: async () => ({ data: [{ provider: "openai", id: "gpt-5.2-codex" }] }) },
         session: {
           create: async () => ({ data: { id: "test-session" } }),
           prompt: async () => ({ data: {} }),
           messages: async () => ({ data: [] }),
+          status: async () => ({ data: {} }),
         },
       }
       
@@ -341,6 +344,46 @@ describe("sisyphus-task", () => {
 
       // #then
       expect(result).toBeNull()
+    })
+
+    test("bypasses requiresModel when explicit user config provided", () => {
+      // #given
+      const categoryName = "deep"
+      const availableModels = new Set<string>(["anthropic/claude-opus-4-5"])
+      const userCategories = {
+        deep: { model: "anthropic/claude-opus-4-5" },
+      }
+
+      // #when
+      const result = resolveCategoryConfig(categoryName, {
+        systemDefaultModel: SYSTEM_DEFAULT_MODEL,
+        availableModels,
+        userCategories,
+      })
+
+      // #then
+      expect(result).not.toBeNull()
+      expect(result!.config.model).toBe("anthropic/claude-opus-4-5")
+    })
+
+    test("bypasses requiresModel when explicit user config provided even with empty availability", () => {
+      // #given
+      const categoryName = "deep"
+      const availableModels = new Set<string>()
+      const userCategories = {
+        deep: { model: "anthropic/claude-opus-4-5" },
+      }
+
+      // #when
+      const result = resolveCategoryConfig(categoryName, {
+        systemDefaultModel: SYSTEM_DEFAULT_MODEL,
+        availableModels,
+        userCategories,
+      })
+
+      // #then
+      expect(result).not.toBeNull()
+      expect(result!.config.model).toBe("anthropic/claude-opus-4-5")
     })
 
     test("returns default model from DEFAULT_CATEGORIES for builtin category", () => {

@@ -31,9 +31,6 @@ exports[`generateModelConfig no providers available returns ULTIMATE_FALLBACK fo
     "prometheus": {
       "model": "opencode/glm-4.7-free",
     },
-    "sisyphus": {
-      "model": "opencode/glm-4.7-free",
-    },
   },
   "categories": {
     "artistry": {
@@ -101,7 +98,8 @@ exports[`generateModelConfig single native provider uses Claude models when only
       "variant": "max",
     },
     "sisyphus": {
-      "model": "anthropic/claude-sonnet-4-5",
+      "model": "anthropic/claude-opus-4-5",
+      "variant": "max",
     },
   },
   "categories": {
@@ -248,10 +246,6 @@ exports[`generateModelConfig single native provider uses OpenAI models when only
       "model": "openai/gpt-5.2",
       "variant": "high",
     },
-    "sisyphus": {
-      "model": "openai/gpt-5.2",
-      "variant": "high",
-    },
   },
   "categories": {
     "artistry": {
@@ -322,10 +316,6 @@ exports[`generateModelConfig single native provider uses OpenAI models with isMa
       "model": "openai/gpt-5.2",
       "variant": "high",
     },
-    "sisyphus": {
-      "model": "openai/gpt-5.2-codex",
-      "variant": "medium",
-    },
   },
   "categories": {
     "artistry": {
@@ -395,9 +385,6 @@ exports[`generateModelConfig single native provider uses Gemini models when only
     "prometheus": {
       "model": "google/gemini-3-pro",
     },
-    "sisyphus": {
-      "model": "google/gemini-3-pro",
-    },
   },
   "categories": {
     "artistry": {
@@ -464,9 +451,6 @@ exports[`generateModelConfig single native provider uses Gemini models with isMa
       "variant": "max",
     },
     "prometheus": {
-      "model": "google/gemini-3-pro",
-    },
-    "sisyphus": {
       "model": "google/gemini-3-pro",
     },
   },
@@ -539,7 +523,8 @@ exports[`generateModelConfig all native providers uses preferred models from fal
       "variant": "max",
     },
     "sisyphus": {
-      "model": "anthropic/claude-sonnet-4-5",
+      "model": "anthropic/claude-opus-4-5",
+      "variant": "max",
     },
   },
   "categories": {
@@ -685,7 +670,8 @@ exports[`generateModelConfig fallback providers uses OpenCode Zen models when on
       "variant": "max",
     },
     "sisyphus": {
-      "model": "opencode/claude-sonnet-4-5",
+      "model": "opencode/claude-opus-4-5",
+      "variant": "max",
     },
   },
   "categories": {
@@ -831,7 +817,8 @@ exports[`generateModelConfig fallback providers uses GitHub Copilot models when 
       "variant": "max",
     },
     "sisyphus": {
-      "model": "github-copilot/claude-sonnet-4.5",
+      "model": "github-copilot/claude-opus-4.5",
+      "variant": "max",
     },
   },
   "categories": {
@@ -972,7 +959,7 @@ exports[`generateModelConfig fallback providers uses ZAI model for librarian whe
       "model": "opencode/glm-4.7-free",
     },
     "sisyphus": {
-      "model": "opencode/glm-4.7-free",
+      "model": "zai-coding-plan/glm-4.7",
     },
   },
   "categories": {
@@ -1105,7 +1092,8 @@ exports[`generateModelConfig mixed provider scenarios uses Claude + OpenCode Zen
       "variant": "max",
     },
     "sisyphus": {
-      "model": "anthropic/claude-sonnet-4-5",
+      "model": "anthropic/claude-opus-4-5",
+      "variant": "max",
     },
   },
   "categories": {
@@ -1177,7 +1165,8 @@ exports[`generateModelConfig mixed provider scenarios uses OpenAI + Copilot comb
       "variant": "max",
     },
     "sisyphus": {
-      "model": "github-copilot/claude-sonnet-4.5",
+      "model": "github-copilot/claude-opus-4.5",
+      "variant": "max",
     },
   },
   "categories": {
@@ -1249,7 +1238,8 @@ exports[`generateModelConfig mixed provider scenarios uses Claude + ZAI combinat
       "variant": "max",
     },
     "sisyphus": {
-      "model": "anthropic/claude-sonnet-4-5",
+      "model": "anthropic/claude-opus-4-5",
+      "variant": "max",
     },
   },
   "categories": {
@@ -1322,7 +1312,8 @@ exports[`generateModelConfig mixed provider scenarios uses Gemini + Claude combi
       "variant": "max",
     },
     "sisyphus": {
-      "model": "anthropic/claude-sonnet-4-5",
+      "model": "anthropic/claude-opus-4-5",
+      "variant": "max",
     },
   },
   "categories": {
@@ -1394,7 +1385,8 @@ exports[`generateModelConfig mixed provider scenarios uses all fallback provider
       "variant": "max",
     },
     "sisyphus": {
-      "model": "github-copilot/claude-sonnet-4.5",
+      "model": "github-copilot/claude-opus-4.5",
+      "variant": "max",
     },
   },
   "categories": {
@@ -1466,7 +1458,8 @@ exports[`generateModelConfig mixed provider scenarios uses all providers togethe
       "variant": "max",
     },
     "sisyphus": {
-      "model": "anthropic/claude-sonnet-4-5",
+      "model": "anthropic/claude-opus-4-5",
+      "variant": "max",
     },
   },
   "categories": {
