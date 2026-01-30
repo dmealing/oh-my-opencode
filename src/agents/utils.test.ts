@@ -1,8 +1,9 @@
-import { describe, test, expect, beforeEach, spyOn, afterEach } from "bun:test"
+import { describe, test, expect, beforeEach, afterEach, spyOn } from "bun:test"
 import { createBuiltinAgents } from "./utils"
 import type { AgentConfig } from "@opencode-ai/sdk"
 import { clearSkillCache } from "../features/opencode-skill-loader/skill-content"
 import * as connectedProvidersCache from "../shared/connected-providers-cache"
+import * as shared from "../shared"
 
 const TEST_DEFAULT_MODEL = "anthropic/claude-opus-4-5"
 
@@ -161,11 +162,51 @@ describe("createBuiltinAgents without systemDefaultModel", () => {
   })
 })
 
+describe("createBuiltinAgents with requiresModel gating", () => {
+  test("hephaestus is not created when gpt-5.2-codex is unavailable", async () => {
+    // #given
+    const fetchSpy = spyOn(shared, "fetchAvailableModels").mockResolvedValue(
+      new Set(["anthropic/claude-opus-4-5"])
+    )
+
+    try {
+      // #when
+      const agents = await createBuiltinAgents([], {}, undefined, TEST_DEFAULT_MODEL, undefined, undefined, [], {})
+
+      // #then
+      expect(agents.hephaestus).toBeUndefined()
+    } finally {
+      fetchSpy.mockRestore()
+    }
+  })
+
+  test("hephaestus is created when gpt-5.2-codex is available", async () => {
+    // #given
+    const fetchSpy = spyOn(shared, "fetchAvailableModels").mockResolvedValue(
+      new Set(["openai/gpt-5.2-codex"])
+    )
+
+    try {
+      // #when
+      const agents = await createBuiltinAgents([], {}, undefined, TEST_DEFAULT_MODEL, undefined, undefined, [], {})
+
+      // #then
+      expect(agents.hephaestus).toBeDefined()
+    } finally {
+      fetchSpy.mockRestore()
+    }
+  })
+})
+
 describe("buildAgent with category and skills", () => {
   const { buildAgent } = require("./utils")
   const TEST_MODEL = "anthropic/claude-opus-4-5"
 
   beforeEach(() => {
+    clearSkillCache()
+  })
+
+  afterEach(() => {
     clearSkillCache()
   })
 

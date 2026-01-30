@@ -9,6 +9,7 @@ import { createMultimodalLookerAgent, MULTIMODAL_LOOKER_PROMPT_METADATA } from "
 import { createMetisAgent } from "./metis"
 import { createAtlasAgent } from "./atlas"
 import { createMomusAgent } from "./momus"
+import { createHephaestusAgent } from "./hephaestus"
 import type { AvailableAgent, AvailableCategory, AvailableSkill } from "./dynamic-agent-prompt-builder"
 import { deepMerge, fetchAvailableModels, resolveModelWithFallback, AGENT_MODEL_REQUIREMENTS, findCaseInsensitive, includesCaseInsensitive, readConnectedProvidersCache, isModelAvailable } from "../shared"
 import { DEFAULT_CATEGORIES, CATEGORY_DESCRIPTIONS } from "../tools/delegate-task/constants"
@@ -21,6 +22,7 @@ type AgentSource = AgentFactory | AgentConfig
 
 const agentSources: Record<BuiltinAgentName, AgentSource> = {
   sisyphus: createSisyphusAgent,
+  hephaestus: createHephaestusAgent,
   oracle: createOracleAgent,
   librarian: createLibrarianAgent,
   explore: createExploreAgent,
@@ -215,11 +217,15 @@ export async function createBuiltinAgents(
 
   const availableSkills: AvailableSkill[] = [...builtinAvailable, ...discoveredAvailable]
 
+  // Collect general agents first (for availableAgents), but don't add to result yet
+  const pendingAgentConfigs: Map<string, AgentConfig> = new Map()
+
    for (const [name, source] of Object.entries(agentSources)) {
      const agentName = name as BuiltinAgentName
 
      if (agentName === "sisyphus") continue
-     if (agentName === "atlas") continue
+      if (agentName === "hephaestus") continue
+      if (agentName === "atlas") continue
      if (includesCaseInsensitive(disabledAgents, agentName)) continue
 
      const override = findCaseInsensitive(agentOverrides, agentName)
@@ -267,7 +273,8 @@ export async function createBuiltinAgents(
       config = mergeAgentConfig(config, override)
     }
 
-    result[name] = config
+    // Store for later - will be added after sisyphus and hephaestus
+    pendingAgentConfigs.set(name, config)
 
     const metadata = agentMetadata[agentName]
     if (metadata) {
@@ -322,6 +329,60 @@ export async function createBuiltinAgents(
 
       result["sisyphus"] = sisyphusConfig
     }
+   }
+
+  if (!disabledAgents.includes("hephaestus")) {
+    const hephaestusOverride = agentOverrides["hephaestus"]
+    const hephaestusRequirement = AGENT_MODEL_REQUIREMENTS["hephaestus"]
+
+    const hasRequiredModel =
+      !hephaestusRequirement?.requiresModel ||
+      !availableModels ||
+      isModelAvailable(hephaestusRequirement.requiresModel, availableModels)
+
+    if (hasRequiredModel) {
+      const hephaestusResolution = resolveModelWithFallback({
+        userModel: hephaestusOverride?.model,
+        fallbackChain: hephaestusRequirement?.fallbackChain,
+        availableModels,
+        systemDefaultModel,
+      })
+
+      if (hephaestusResolution) {
+        const { model: hephaestusModel, variant: hephaestusResolvedVariant } = hephaestusResolution
+
+        let hephaestusConfig = createHephaestusAgent(
+          hephaestusModel,
+          availableAgents,
+          undefined,
+          availableSkills,
+          availableCategories
+        )
+        
+        hephaestusConfig = { ...hephaestusConfig, variant: hephaestusResolvedVariant ?? "medium" }
+
+        const hepOverrideCategory = (hephaestusOverride as Record<string, unknown> | undefined)?.category as string | undefined
+        if (hepOverrideCategory) {
+          hephaestusConfig = applyCategoryOverride(hephaestusConfig, hepOverrideCategory, mergedCategories)
+        }
+
+        if (directory && hephaestusConfig.prompt) {
+          const envContext = createEnvContext()
+          hephaestusConfig = { ...hephaestusConfig, prompt: hephaestusConfig.prompt + envContext }
+        }
+
+        if (hephaestusOverride) {
+          hephaestusConfig = mergeAgentConfig(hephaestusConfig, hephaestusOverride)
+        }
+
+        result["hephaestus"] = hephaestusConfig
+      }
+    }
+   }
+
+   // Add pending agents after sisyphus and hephaestus to maintain order
+   for (const [name, config] of pendingAgentConfigs) {
+     result[name] = config
    }
 
    if (!disabledAgents.includes("atlas")) {

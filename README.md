@@ -114,6 +114,7 @@ Yes, technically possible. But I cannot recommend using it.
     - [It's the Age of Agents](#its-the-age-of-agents)
     - [🪄 The Magic Word: `ultrawork`](#-the-magic-word-ultrawork)
     - [For Those Who Want to Read: Meet Sisyphus](#for-those-who-want-to-read-meet-sisyphus)
+    - [For Those Who Want Autonomy: Meet Hephaestus](#for-those-who-want-autonomy-meet-hephaestus)
       - [Just Install It.](#just-install-it)
   - [Installation](#installation)
     - [For Humans](#for-humans)
@@ -193,6 +194,7 @@ Meet our main agent: Sisyphus (Opus 4.5 High). Below are the tools Sisyphus uses
 *Everything below is customizable. Take what you want. All features are enabled by default. You don't have to do anything. Battery Included, works out of the box.*
 
 - Sisyphus's Teammates (Curated Agents)
+  - Hephaestus: Autonomous deep worker, goal-oriented execution (GPT 5.2 Codex Medium) — *The Legitimate Craftsman*
   - Oracle: Design, debugging (GPT 5.2 Medium)
   - Frontend UI/UX Engineer: Frontend development (Gemini 3 Pro)
   - Librarian: Official docs, open source implementations, codebase exploration (Claude Sonnet 4.5)
@@ -208,6 +210,24 @@ Meet our main agent: Sisyphus (Opus 4.5 High). Below are the tools Sisyphus uses
 - Interactive Terminal Supported - Tmux Integration
 - Async Agents
 - ...
+
+### For Those Who Want Autonomy: Meet Hephaestus
+
+![Meet Hephaestus](.github/assets/hephaestus.png)
+
+In Greek mythology, Hephaestus was the god of forge, fire, metalworking, and craftsmanship—the divine blacksmith who crafted weapons for the gods with unmatched precision and dedication.
+**Meet our autonomous deep worker: Hephaestus (GPT 5.2 Codex Medium). The Legitimate Craftsman Agent.**
+
+*Why "Legitimate"? When Anthropic blocked third-party access citing ToS violations, the community started joking about "legitimate" usage. Hephaestus embraces this irony—he's the craftsman who builds things the right way, methodically and thoroughly, without cutting corners.*
+
+Hephaestus is inspired by [AmpCode's deep mode](https://ampcode.com)—autonomous problem-solving with thorough research before decisive action. He doesn't need step-by-step instructions; give him a goal and he'll figure out the rest.
+
+**Key Characteristics:**
+- **Goal-Oriented**: Give him an objective, not a recipe. He determines the steps himself.
+- **Explores Before Acting**: Fires 2-5 parallel explore/librarian agents before writing a single line of code.
+- **End-to-End Completion**: Doesn't stop until the task is 100% done with evidence of verification.
+- **Pattern Matching**: Searches existing codebase to match your project's style—no AI slop.
+- **Legitimate Precision**: Crafts code like a master blacksmith—surgical, minimal, exactly what's needed.
 
 #### Just Install This
 

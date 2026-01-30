@@ -18,14 +18,14 @@
 
 ## OVERVIEW
 
-OpenCode plugin: multi-model agent orchestration (Claude Opus 4.5, GPT-5.2, Gemini 3 Flash, Grok Code). 32 lifecycle hooks, 20+ tools (LSP, AST-Grep, delegation), 10 specialized agents, full Claude Code compatibility. "oh-my-zsh" for OpenCode.
+OpenCode plugin: multi-model agent orchestration (Claude Opus 4.5, GPT-5.2, Gemini 3 Flash, Grok Code). 32 lifecycle hooks, 20+ tools (LSP, AST-Grep, delegation), 11 specialized agents, full Claude Code compatibility. "oh-my-zsh" for OpenCode.
 
 ## STRUCTURE
 
 ```
 oh-my-opencode/
 ├── src/
-│   ├── agents/        # 10 AI agents - see src/agents/AGENTS.md
+│   ├── agents/        # 11 AI agents - see src/agents/AGENTS.md
 │   ├── hooks/         # 32 lifecycle hooks - see src/hooks/AGENTS.md
 │   ├── tools/         # 20+ tools - see src/tools/AGENTS.md
 │   ├── features/      # Background agents, Claude Code compat - see src/features/AGENTS.md
@@ -99,6 +99,7 @@ oh-my-opencode/
 | Agent | Model | Purpose |
 |-------|-------|---------|
 | Sisyphus | anthropic/claude-opus-4-5 | Primary orchestrator (fallback: kimi-k2.5 → glm-4.7 → gpt-5.2-codex → gemini-3-pro) |
+| Hephaestus | openai/gpt-5.2-codex | Autonomous deep worker, "The Legitimate Craftsman" |
 | Atlas | anthropic/claude-sonnet-4-5 | Master orchestrator (fallback: kimi-k2.5 → gpt-5.2) |
 | oracle | openai/gpt-5.2 | Consultation, debugging |
 | librarian | zai-coding-plan/glm-4.7 | Docs, GitHub search (fallback: glm-4.7-free) |
