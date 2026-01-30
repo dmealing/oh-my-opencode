@@ -500,7 +500,7 @@ export function createHephaestusAgent(
     model,
     maxTokens: 32000,
     prompt,
-    color: "#FF312E", // Coral Red - complementary to Sisyphus turquoise (#00CED1)
+    color: "#FF4500", // Magma Orange - forge heat, distinct from Prometheus purple
     permission: { question: "allow", call_omo_agent: "deny" } as AgentConfig["permission"],
     reasoningEffort: "medium",
   }

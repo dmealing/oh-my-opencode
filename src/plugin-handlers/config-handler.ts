@@ -300,7 +300,7 @@ export function createConfigHandler(deps: ConfigHandlerDeps) {
           prompt: PROMETHEUS_SYSTEM_PROMPT,
           permission: PROMETHEUS_PERMISSION,
           description: `${configAgent?.plan?.description ?? "Plan agent"} (Prometheus - OhMyOpenCode)`,
-          color: (configAgent?.plan?.color as string) ?? "#FF6347",
+          color: (configAgent?.plan?.color as string) ?? "#9D4EDD", // Amethyst Purple - wisdom/foresight
           ...(temperatureToUse !== undefined ? { temperature: temperatureToUse } : {}),
           ...(topPToUse !== undefined ? { top_p: topPToUse } : {}),
           ...(maxTokensToUse !== undefined ? { maxTokens: maxTokensToUse } : {}),
